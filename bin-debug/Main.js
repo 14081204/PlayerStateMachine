@@ -111,12 +111,12 @@ var Main = (function (_super) {
         this.addChild(this.player);
         this.player.x = stageW / 2;
         this.player.y = stageH / 2;
-        this.player.Idle();
+        this.player.UpdateIdle();
         this.touchEnabled = true;
-        this.addEventListener(egret.TouchEvent.TOUCH_TAP, this.Moveby, this);
+        this.addEventListener(egret.TouchEvent.TOUCH_TAP, this.MoveTo, this);
     };
-    p.Moveby = function (evt) {
-        this.player.Move(evt.stageX, evt.stageY);
+    p.MoveTo = function (evt) {
+        this.player.UpdateMove(evt.stageX, evt.stageY);
     };
     /**
      * 根据name关键字创建一个Bitmap对象。name属性请参考resources/resource.json配置文件的内容。
@@ -154,7 +154,7 @@ var MoveState = (function () {
     var d = __define,c=MoveState,p=c.prototype;
     p.onEnter = function () {
         var _this = this;
-        this.player.Modle++; //使用行走序列
+        this.player.PersonModel++; //改为行走序列
         var positionx = this.PlayerPositionx - this.player.x; //计算坐标
         var positiony = this.PlayerPositiony - this.player.y;
         if (positionx > 0) {
@@ -164,22 +164,22 @@ var MoveState = (function () {
             this.player.scaleX = -1; //水平翻转
         }
         var distance = Math.sqrt(positionx * positionx + positiony * positiony);
-        var time = distance / this.player.MoveSpeed; //行走时间
+        var time = distance / this.player.Speed; //行走时间
         this.timer = new egret.Timer(50, time);
-        this.LeastTime = time;
+        this.ResidualMovementTime = time;
         this.timer.addEventListener(egret.TimerEvent.TIMER, function () {
             _this.player.x = _this.player.x + positionx / time;
             _this.player.y = _this.player.y + positiony / time;
-            _this.LeastTime--;
-            if (_this.LeastTime < 1) {
+            _this.ResidualMovementTime--;
+            if (_this.ResidualMovementTime < 1) {
                 _this.timer.stop();
-                if (_this.LeastTime > 0) {
-                    _this.player.Idle();
+                if (_this.ResidualMovementTime > 0) {
+                    _this.player.UpdateIdle();
                 }
             }
         }, this);
         this.timer.start();
-        this.player.PlayerAni(this.player.MoveAni);
+        this.player.PlayerPic(this.player.MoveTexture);
     };
     p.onExit = function () {
     };
@@ -192,8 +192,8 @@ var IdleState = (function () {
     }
     var d = __define,c=IdleState,p=c.prototype;
     p.onEnter = function () {
-        this.player.Modle = 0;
-        this.player.PlayerAni(this.player.IdleAni);
+        this.player.PersonModel = 0;
+        this.player.PlayerPic(this.player.IdleTexture);
     };
     p.onExit = function () {
     };
@@ -205,13 +205,13 @@ var Player = (function (_super) {
     function Player() {
         _super.call(this);
         this.Mystate = new StateMachine;
-        this.MoveSpeed = 20;
-        this.Modle = 0; //初始站立
-        this.IdleAni = new Array();
-        this.MoveAni = new Array();
+        this.Speed = 20;
+        this.PersonModel = 0; //初始站立
+        this.IdleTexture = new Array();
+        this.MoveTexture = new Array();
         this.Initial = this.createBitmapByName("stand_0001_png");
         this.addChild(this.Initial);
-        this.LoadAni();
+        this.LoadPic();
         this.anchorOffsetX = this.Initial.width / 2;
         this.anchorOffsetY = this.Initial.height / 2;
     }
@@ -222,65 +222,65 @@ var Player = (function (_super) {
         result.texture = texture;
         return result;
     };
-    p.LoadAni = function () {
+    p.LoadPic = function () {
         var texture = RES.getRes("stand_0001_png");
-        this.IdleAni.push(texture);
+        this.IdleTexture.push(texture);
         texture = RES.getRes("stand_0002_png");
-        this.IdleAni.push(texture);
+        this.IdleTexture.push(texture);
         texture = RES.getRes("stand_0003_png");
-        this.IdleAni.push(texture);
+        this.IdleTexture.push(texture);
         texture = RES.getRes("stand_0004_png");
-        this.IdleAni.push(texture);
+        this.IdleTexture.push(texture);
         texture = RES.getRes("stand_0005_png");
-        this.IdleAni.push(texture);
+        this.IdleTexture.push(texture);
         texture = RES.getRes("stand_0006_png");
-        this.IdleAni.push(texture);
+        this.IdleTexture.push(texture);
         texture = RES.getRes("stand_0007_png");
-        this.IdleAni.push(texture);
+        this.IdleTexture.push(texture);
         texture = RES.getRes("stand_0008_png");
-        this.IdleAni.push(texture);
+        this.IdleTexture.push(texture);
         texture = RES.getRes("166-1_png");
-        this.MoveAni.push(texture);
+        this.MoveTexture.push(texture);
         texture = RES.getRes("166-2_png");
-        this.MoveAni.push(texture);
+        this.MoveTexture.push(texture);
         texture = RES.getRes("166-3_png");
-        this.MoveAni.push(texture);
+        this.MoveTexture.push(texture);
         texture = RES.getRes("166-4_png");
-        this.MoveAni.push(texture);
+        this.MoveTexture.push(texture);
         texture = RES.getRes("166-5_png");
-        this.MoveAni.push(texture);
+        this.MoveTexture.push(texture);
         texture = RES.getRes("166-6_png");
-        this.MoveAni.push(texture);
+        this.MoveTexture.push(texture);
         texture = RES.getRes("166-7_png");
-        this.MoveAni.push(texture);
+        this.MoveTexture.push(texture);
         texture = RES.getRes("166-8_png");
-        this.MoveAni.push(texture);
+        this.MoveTexture.push(texture);
     };
-    p.PlayerAni = function (Ani) {
+    p.PlayerPic = function (Pic) {
         var count = 0;
         var Photo = this.Initial;
-        var modle = this.Modle;
+        var model = this.PersonModel;
         var timer = new egret.Timer(125, 0);
         timer.addEventListener(egret.TimerEvent.TIMER, Play, this);
         timer.start();
         function Play() {
-            Photo.texture = Ani[count];
-            if (count < Ani.length - 1) {
+            Photo.texture = Pic[count];
+            if (count < Pic.length - 1) {
                 count++;
             }
             else {
                 count = 0;
             }
-            if (this.Modle != modle) {
+            if (this.PersonModel != model) {
                 timer.stop();
             }
         }
     };
-    p.Move = function (x, y) {
+    p.UpdateMove = function (x, y) {
         var movestate = new MoveState(x, y, this);
         this.Mystate.setState(movestate);
     };
-    p.Idle = function () {
+    p.UpdateIdle = function () {
         var idlestate = new IdleState(this);
         this.Mystate.setState(idlestate);
     };

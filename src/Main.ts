@@ -129,13 +129,13 @@ class Main extends egret.DisplayObjectContainer {
         this.addChild(this.player);
         this.player.x = stageW / 2;
         this.player.y = stageH / 2;
-        this.player.Idle();
+        this.player.UpdateIdle();
         this.touchEnabled = true;
-        this.addEventListener(egret.TouchEvent.TOUCH_TAP,this.Moveby,this);
+        this.addEventListener(egret.TouchEvent.TOUCH_TAP,this.MoveTo,this);
     }
 
-    private Moveby(evt:egret.TouchEvent): void{
-        this.player.Move(evt.stageX,evt.stageY);
+    private MoveTo(evt:egret.TouchEvent): void{
+        this.player.UpdateMove(evt.stageX,evt.stageY);
     }
 
     /**
@@ -173,7 +173,7 @@ class MoveState implements State{
     private PlayerPositiony:number;
     private player:Player;
     private timer:egret.Timer;
-    private LeastTime:number;
+    private ResidualMovementTime:number;
 
     constructor(x: number,y: number,player:Player){
         this.PlayerPositionx = x;
@@ -182,7 +182,7 @@ class MoveState implements State{
     }
 
     onEnter(){
-        this.player.Modle++;                    //使用行走序列
+        this.player.PersonModel++;                    //改为行走序列
         var positionx = this.PlayerPositionx - this.player.x;           //计算坐标
         var positiony = this.PlayerPositiony - this.player.y;
 
@@ -195,24 +195,24 @@ class MoveState implements State{
 
         var distance = Math.sqrt(positionx * positionx + positiony * positiony);
 
-        var time:number = distance / this.player.MoveSpeed;     //行走时间
+        var time:number = distance / this.player.Speed;     //行走时间
         this.timer = new egret.Timer(50, time);
-        this.LeastTime = time;
+        this.ResidualMovementTime = time;
 
         this.timer.addEventListener(egret.TimerEvent.TIMER,() => {
             this.player.x = this.player.x + positionx / time;
             this.player.y = this.player.y + positiony / time;
-            this.LeastTime--;
+            this.ResidualMovementTime--;
 
-            if(this.LeastTime < 1){
+            if(this.ResidualMovementTime < 1){
                 this.timer.stop();
-                if(this.LeastTime > 0){                         //到指定位置后停下
-                    this.player.Idle();
+                if(this.ResidualMovementTime > 0){                         //到指定位置后停下
+                    this.player.UpdateIdle();
                 }
             }
         }, this);
         this.timer.start();
-        this.player.PlayerAni(this.player.MoveAni);
+        this.player.PlayerPic(this.player.MoveTexture);
     }
 
     onExit(){
@@ -226,8 +226,8 @@ class IdleState implements State{
     }
 
     onEnter(){
-        this.player.Modle = 0;
-        this.player.PlayerAni(this.player.IdleAni);
+        this.player.PersonModel = 0;
+        this.player.PlayerPic(this.player.IdleTexture);
     }
 
     onExit(){
@@ -237,16 +237,16 @@ class IdleState implements State{
 class Player extends egret.DisplayObjectContainer{
     public Initial:egret.Bitmap;
     private Mystate:StateMachine = new StateMachine;
-    public MoveSpeed:number = 20;
-    public Modle:number = 0;                                 //初始站立
-    public IdleAni:Array<egret.Texture> = new Array<egret.Texture>();
-    public MoveAni:Array<egret.Texture> = new Array<egret.Texture>();
+    public Speed:number = 20;
+    public PersonModel:number = 0;                                 //初始站立
+    public IdleTexture:Array<egret.Texture> = new Array<egret.Texture>();
+    public MoveTexture:Array<egret.Texture> = new Array<egret.Texture>();
 
     constructor(){
         super();
         this.Initial = this.createBitmapByName("stand_0001_png");
         this.addChild(this.Initial);
-        this.LoadAni();
+        this.LoadPic();
         this.anchorOffsetX = this.Initial.width / 2;
         this.anchorOffsetY = this.Initial.height / 2;
     }
@@ -258,69 +258,69 @@ class Player extends egret.DisplayObjectContainer{
         return result;
     }
 
-    private LoadAni(){
+    private LoadPic(){
         var texture:egret.Texture = RES.getRes("stand_0001_png");
-        this.IdleAni.push(texture);
+        this.IdleTexture.push(texture);
         texture = RES.getRes("stand_0002_png");
-        this.IdleAni.push(texture);
+        this.IdleTexture.push(texture);
         texture = RES.getRes("stand_0003_png");
-        this.IdleAni.push(texture);
+        this.IdleTexture.push(texture);
         texture = RES.getRes("stand_0004_png");
-        this.IdleAni.push(texture);
+        this.IdleTexture.push(texture);
         texture = RES.getRes("stand_0005_png");
-        this.IdleAni.push(texture);
+        this.IdleTexture.push(texture);
         texture = RES.getRes("stand_0006_png");
-        this.IdleAni.push(texture);
+        this.IdleTexture.push(texture);
         texture = RES.getRes("stand_0007_png");
-        this.IdleAni.push(texture);
+        this.IdleTexture.push(texture);
         texture = RES.getRes("stand_0008_png");
-        this.IdleAni.push(texture);
+        this.IdleTexture.push(texture);
         texture = RES.getRes("166-1_png");
-        this.MoveAni.push(texture);
+        this.MoveTexture.push(texture);
         texture = RES.getRes("166-2_png");
-        this.MoveAni.push(texture);
+        this.MoveTexture.push(texture);
         texture = RES.getRes("166-3_png");
-        this.MoveAni.push(texture);
+        this.MoveTexture.push(texture);
         texture = RES.getRes("166-4_png");
-        this.MoveAni.push(texture);
+        this.MoveTexture.push(texture);
         texture = RES.getRes("166-5_png");
-        this.MoveAni.push(texture);
+        this.MoveTexture.push(texture);
         texture = RES.getRes("166-6_png");
-        this.MoveAni.push(texture);
+        this.MoveTexture.push(texture);
         texture = RES.getRes("166-7_png");
-        this.MoveAni.push(texture);
+        this.MoveTexture.push(texture);
         texture = RES.getRes("166-8_png");
-        this.MoveAni.push(texture);
+        this.MoveTexture.push(texture);
     }
 
-    public PlayerAni(Ani:Array <egret.Texture>){
+    public PlayerPic(Pic:Array <egret.Texture>){
         var count = 0;
         var Photo = this.Initial;
-        var modle = this.Modle;
+        var model = this.PersonModel;
         var timer: egret.Timer = new egret.Timer(125,0);
         timer.addEventListener(egret.TimerEvent.TIMER,Play,this);
         timer.start();
 
         function Play(){
-            Photo.texture = Ani[count];
-            if(count < Ani.length - 1){
+            Photo.texture = Pic[count];
+            if(count < Pic.length - 1){
                 count++;                
             }
             else{
                 count = 0;
             }
-            if(this.Modle != modle){
+            if(this.PersonModel != model){
                 timer.stop();
             }                            
         }
     }
 
-    public Move(x: number,y: number){
+    public UpdateMove(x: number,y: number){
         var movestate:MoveState = new MoveState(x, y, this);
         this.Mystate.setState(movestate);
     }
 
-    public Idle(){
+    public UpdateIdle(){
         var idlestate = new IdleState(this);
         this.Mystate.setState(idlestate);
     }    
