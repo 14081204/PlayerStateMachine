@@ -1,0 +1,115 @@
+{
+	"groups": [
+		{
+			"keys": "bg_jpg,egret_icon_png,description_json,166-1_png,166-2_png,166-3_png,166-4_png,166-5_png,166-6_png,166-7_png,166-8_png,background_jpg,background2_jpg,stand_0001_png,stand_0002_png,stand_0003_png,stand_0004_png,stand_0005_png,stand_0006_png,stand_0007_png,stand_0008_png",
+			"name": "preload"
+		}
+	],
+	"resources": [
+		{
+			"name": "bg_jpg",
+			"type": "image",
+			"url": "assets/bg.jpg"
+		},
+		{
+			"name": "egret_icon_png",
+			"type": "image",
+			"url": "assets/egret_icon.png"
+		},
+		{
+			"name": "description_json",
+			"type": "json",
+			"url": "config/description.json"
+		},
+		{
+			"name": "166-1_png",
+			"type": "image",
+			"url": "assets/166-1.png"
+		},
+		{
+			"name": "166-2_png",
+			"type": "image",
+			"url": "assets/166-2.png"
+		},
+		{
+			"name": "166-3_png",
+			"type": "image",
+			"url": "assets/166-3.png"
+		},
+		{
+			"name": "166-4_png",
+			"type": "image",
+			"url": "assets/166-4.png"
+		},
+		{
+			"name": "166-5_png",
+			"type": "image",
+			"url": "assets/166-5.png"
+		},
+		{
+			"name": "166-6_png",
+			"type": "image",
+			"url": "assets/166-6.png"
+		},
+		{
+			"name": "166-7_png",
+			"type": "image",
+			"url": "assets/166-7.png"
+		},
+		{
+			"name": "166-8_png",
+			"type": "image",
+			"url": "assets/166-8.png"
+		},
+		{
+			"name": "background_jpg",
+			"type": "image",
+			"url": "assets/background.jpg"
+		},
+		{
+			"name": "background2_jpg",
+			"type": "image",
+			"url": "assets/background2.jpg"
+		},
+		{
+			"name": "stand_0001_png",
+			"type": "image",
+			"url": "assets/stand_0001.png"
+		},
+		{
+			"name": "stand_0002_png",
+			"type": "image",
+			"url": "assets/stand_0002.png"
+		},
+		{
+			"name": "stand_0003_png",
+			"type": "image",
+			"url": "assets/stand_0003.png"
+		},
+		{
+			"name": "stand_0004_png",
+			"type": "image",
+			"url": "assets/stand_0004.png"
+		},
+		{
+			"name": "stand_0005_png",
+			"type": "image",
+			"url": "assets/stand_0005.png"
+		},
+		{
+			"name": "stand_0006_png",
+			"type": "image",
+			"url": "assets/stand_0006.png"
+		},
+		{
+			"name": "stand_0007_png",
+			"type": "image",
+			"url": "assets/stand_0007.png"
+		},
+		{
+			"name": "stand_0008_png",
+			"type": "image",
+			"url": "assets/stand_0008.png"
+		}
+	]
+}
