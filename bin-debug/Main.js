@@ -109,8 +109,8 @@ var Main = (function (_super) {
         sky.height = stageH;
         this.player = new Player();
         this.addChild(this.player);
-        this.player.x = 320;
-        this.player.y = 568;
+        this.player.x = stageW / 2;
+        this.player.y = stageH / 2;
         this.player.Idle();
         this.touchEnabled = true;
         this.addEventListener(egret.TouchEvent.TOUCH_TAP, this.Moveby, this);
@@ -154,17 +154,17 @@ var MoveState = (function () {
     var d = __define,c=MoveState,p=c.prototype;
     p.onEnter = function () {
         var _this = this;
-        this.player.Modle++;
-        var positionx = this.PlayerPositionx - this.player.x;
+        this.player.Modle++; //使用行走序列
+        var positionx = this.PlayerPositionx - this.player.x; //计算坐标
         var positiony = this.PlayerPositiony - this.player.y;
         if (positionx > 0) {
             this.player.scaleX = 1;
         }
         else {
-            this.player.scaleX = -1;
+            this.player.scaleX = -1; //水平翻转
         }
         var distance = Math.sqrt(positionx * positionx + positiony * positiony);
-        var time = distance / this.player.MoveSpeed;
+        var time = distance / this.player.MoveSpeed; //行走时间
         this.timer = new egret.Timer(50, time);
         this.LeastTime = time;
         this.timer.addEventListener(egret.TimerEvent.TIMER, function () {
@@ -173,7 +173,7 @@ var MoveState = (function () {
             _this.LeastTime--;
             if (_this.LeastTime < 1) {
                 _this.timer.stop();
-                if (_this.LeastTime > -10) {
+                if (_this.LeastTime > 0) {
                     _this.player.Idle();
                 }
             }
@@ -182,7 +182,6 @@ var MoveState = (function () {
         this.player.PlayerAni(this.player.MoveAni);
     };
     p.onExit = function () {
-        this.LeastTime = -10;
     };
     return MoveState;
 }());
@@ -207,7 +206,7 @@ var Player = (function (_super) {
         _super.call(this);
         this.Mystate = new StateMachine;
         this.MoveSpeed = 20;
-        this.Modle = 0;
+        this.Modle = 0; //初始站立
         this.IdleAni = new Array();
         this.MoveAni = new Array();
         this.Initial = this.createBitmapByName("stand_0001_png");

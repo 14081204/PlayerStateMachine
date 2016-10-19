@@ -127,8 +127,8 @@ class Main extends egret.DisplayObjectContainer {
         
         this.player = new Player();
         this.addChild(this.player);
-        this.player.x = 320;
-        this.player.y = 568;
+        this.player.x = stageW / 2;
+        this.player.y = stageH / 2;
         this.player.Idle();
         this.touchEnabled = true;
         this.addEventListener(egret.TouchEvent.TOUCH_TAP,this.Moveby,this);
@@ -150,7 +150,7 @@ class Main extends egret.DisplayObjectContainer {
     }
 }
 
-interface State{
+interface State{    //接口
     onEnter();
     onExit();
 }
@@ -158,7 +158,7 @@ interface State{
 class StateMachine{
     _currentState:State;
 
-    public setState(s:State):void{
+    public setState(s:State):void{        //退出当前状态，进入新状态
         if(this._currentState != null){
             this._currentState.onExit();
         }
@@ -182,20 +182,20 @@ class MoveState implements State{
     }
 
     onEnter(){
-        this.player.Modle++;
-        var positionx = this.PlayerPositionx - this.player.x;
+        this.player.Modle++;                    //使用行走序列
+        var positionx = this.PlayerPositionx - this.player.x;           //计算坐标
         var positiony = this.PlayerPositiony - this.player.y;
 
         if(positionx > 0){
             this.player.scaleX = 1;
         }
         else{
-            this.player.scaleX = -1;
+            this.player.scaleX = -1;            //水平翻转
         }
 
         var distance = Math.sqrt(positionx * positionx + positiony * positiony);
 
-        var time:number = distance / this.player.MoveSpeed;
+        var time:number = distance / this.player.MoveSpeed;     //行走时间
         this.timer = new egret.Timer(50, time);
         this.LeastTime = time;
 
@@ -206,7 +206,7 @@ class MoveState implements State{
 
             if(this.LeastTime < 1){
                 this.timer.stop();
-                if(this.LeastTime > -10){
+                if(this.LeastTime > 0){                         //到指定位置后停下
                     this.player.Idle();
                 }
             }
@@ -216,7 +216,6 @@ class MoveState implements State{
     }
 
     onExit(){
-        this.LeastTime = -10;
     }
 }
 
@@ -239,7 +238,7 @@ class Player extends egret.DisplayObjectContainer{
     public Initial:egret.Bitmap;
     private Mystate:StateMachine = new StateMachine;
     public MoveSpeed:number = 20;
-    public Modle:number = 0;
+    public Modle:number = 0;                                 //初始站立
     public IdleAni:Array<egret.Texture> = new Array<egret.Texture>();
     public MoveAni:Array<egret.Texture> = new Array<egret.Texture>();
 
